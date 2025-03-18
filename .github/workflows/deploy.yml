@@ -1,0 +1,39 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master  # Trigger the workflow on push to the master branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js (if using a build tool like npm or yarn)
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Specify the Node.js version you are using
+
+      - name: Install dependencies
+        run: |
+          npm install  # Or `yarn install` if using Yarn
+
+      - name: Build project (if necessary)
+        run: |
+          npm run build  # Replace with your build command if using a build tool
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages  # This is the branch where GitHub Pages will be deployed
+          folder: build     # This is the folder containing the build output (adjust as needed)
+
+      - name: Clean up
+        run: |
+          git fetch --unshallow
+          git checkout gh-pages
+          git reset --hard origin/gh-pages
